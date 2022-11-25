@@ -1,6 +1,7 @@
 package com.wolf.consumer1;
 
 import com.wolf.consumer1.entity.Customer;
+import com.wolf.consumer1.service.CustomerService;
 import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,15 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         StubRunnerProperties.StubsMode.LOCAL)
 class Consumer1ApplicationTests {
 
+    @Autowired
+    private CustomerService customerService;
     @Test
     public void getCustomerInfo() {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<Customer>> customerResponseEntity = restTemplate.exchange(
-                "http://localhost:8080/customers", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Customer>>(){});
-        assertThat(customerResponseEntity.getStatusCodeValue()).isEqualTo(200);
-        BDDAssertions.then(customerResponseEntity.getStatusCodeValue()).isEqualTo(200);
-        BDDAssertions.then(customerResponseEntity.getBody()).isNotEmpty();
+        List<Customer> customerList = customerService.getAlLCustomers();
+        assertThat(customerList).isNotEmpty();
     }
 
 }
